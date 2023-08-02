@@ -7,14 +7,13 @@ import { searchPositions } from '../../services/api';
 import React from 'react';
 import Header from '../../components/header/Header';
 import Container from '../../components/container/Container';
-
 export default function SearchPage() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [identification, setIdentification] = useState('');
   const [positions, setPositions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-
+  
   const handleSearch = async (page?: number) => {
     const response = await searchPositions(startDate, endDate, identification, page || currentPage);
     setPositions(response.resultado);
@@ -38,24 +37,54 @@ export default function SearchPage() {
       } } />
       <Container>
         <h1>Pesquisa de Posições</h1>
-        <form onSubmit={() => handleSearch(1)}>
+        <form onSubmit={(e) => {
+            e.preventDefault();
+            handleSearch(1)
+          }
+        }>
           <Input
             type="text"
             placeholder="Identificação"
             value={identification}
             onChange={(e) => setIdentification(e.target.value)}
           />
-          <Datepicker
+          <Input
+              type="date"
+              placeholder="Data inicial"
+              value={startDate}
+              onChange={(e) => { 
+                setStartDate(e.target.value)
+              }
+            }
+          />
+          <Input
+              type="date"
+              placeholder="Data Final"
+              value={endDate}
+              onChange={(e) => { 
+                setEndDate(e.target.value)
+              }
+            }
+          />
+          {/* <Datepicker
             placeholder="Data inicial"
             selected={startDate}
-            onChange={(date) => setStartDate(date)}
+            onChange={(date) => { 
+                console.log('aqui' ,date)
+                setStartDate(date)
+                
+              }
+            }
           />
           <Datepicker
             placeholder="Data final"
             selected={endDate}
             onChange={(date) => setEndDate(date)}
-          />
-          <Button type="submit">Pesquisar</Button>
+          /> */}
+          <Button 
+            label="Pesquisar"
+            onClick={handleSearch}
+          ></Button>
         </form>
         {positions.length > 0 && (
           <Panel>
